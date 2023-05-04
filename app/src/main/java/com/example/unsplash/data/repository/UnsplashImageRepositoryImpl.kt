@@ -38,14 +38,14 @@ class UnsplashImageRepositoryImpl @Inject constructor(
             dao.addImages(imageList.map { it.toImageData().also { data -> data.pageNum = pageNum } })
 
         } catch (e: HttpException) {
-            // handle HTTP errors (e.g., invalid API key)
+            // handle HTTP errors
             if (e.response()?.code() == HttpURLConnection.HTTP_UNAUTHORIZED)
                 emit(Resource.Error<List<ImageData>>("Check your API Key"))
             else
-                emit(Resource.Error<List<ImageData>>("Oops, Something went wrong!"))
+                emit(Resource.Error<List<ImageData>>("Something went wrong!"))
         } catch (e: IOException) {
-            // handle network errors (e.g., no internet connection)
-            emit(Resource.Error<List<ImageData>>("Please check you internet connection!"))
+            // handle network errors
+            emit(Resource.Error<List<ImageData>>("Check your internet connection!"))
         }
 
         // get updated image data from the local database
