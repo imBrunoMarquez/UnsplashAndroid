@@ -14,32 +14,44 @@ import com.example.unsplash.utils.Resource
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
-    private val getKeyUseCase: GetKeyUseCase,  // Dependency injection for GetKeyUseCase
-    private val getImagesUseCase: GetImagesUseCase,  // Dependency injection for GetImagesUseCase
-    private val dispatcherProvider: DispatcherProvider  // Dependency injection for DispatcherProvider
+    // Dependency injection for GetKeyUseCase
+    private val getKeyUseCase: GetKeyUseCase,
+    // Dependency injection for GetImagesUseCase
+    private val getImagesUseCase: GetImagesUseCase,
+    // Dependency injection for DispatcherProvider
+    private val dispatcherProvider: DispatcherProvider
 ) : ViewModel() {
 
-    private var pageNum = 1  // Keep track of the page number for pagination
+    // Keep track of the page number for pagination
+    private var pageNum = 1
 
-    private val imageDataList = ArrayList<ImageData>()  // List to store retrieved image data
+    // List to store retrieved image data
+    private val imageDataList = ArrayList<ImageData>()
 
     // MutableStateFlow to store the UI state
     private val _uiState = MutableStateFlow<UiState>(UiState())
-    val uiState: StateFlow<UiState> = _uiState.asStateFlow()  // Expose the UI state as an immutable StateFlow
+    // Expose the UI state as an immutable StateFlow
+    val uiState: StateFlow<UiState> = _uiState.asStateFlow()
 
     // MutableSharedFlow to emit UI events
     private val _eventFlow = MutableSharedFlow<UIEvent>()
-    val eventFlow = _eventFlow.asSharedFlow()  // Expose the UI events as an immutable SharedFlow
+    // Expose the UI events as an immutable SharedFlow
+    val eventFlow = _eventFlow.asSharedFlow()
 
     init {
-        fetchPopularImages()  // Fetch popular images on initialization
+        // Fetch popular images on initialization
+        fetchPopularImages()
     }
 
     fun fetchPopularImages() {
-        viewModelScope.launch(dispatcherProvider.io) {  // Launch a coroutine on the I/O dispatcher
-            getImagesUseCase(GetImagesUseCase.Param(getKeyUseCase(), pageNum++))  // Invoke the GetImagesUseCase with the access key and page number
-                .collect { result ->  // Collect the Flow of Resource objects
-                    _uiState.update {  // Update the UI state based on the Resource
+        // Launch a coroutine on the I/O dispatcher
+        viewModelScope.launch(dispatcherProvider.io) {
+            // Invoke the GetImagesUseCase with the access key and page number
+            getImagesUseCase(GetImagesUseCase.Param(getKeyUseCase(), pageNum++))
+                // Collect the Flow of Resource objects
+                .collect { result ->
+                    // Update the UI state based on the Resource
+                    _uiState.update {
                         when (result) {
                             is Resource.Success -> {
                                 // Append the retrieved images to the existing list, and update the UI state with it
@@ -70,5 +82,6 @@ data class UiState(
 )
 
 sealed class UIEvent {
-    data class ShowSnackbar(val message: String): UIEvent()  // Event for showing a Snackbar with a message
+    // Event for showing a Snackbar with a message
+    data class ShowSnackbar(val message: String): UIEvent()
 }
