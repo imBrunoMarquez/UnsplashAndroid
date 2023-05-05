@@ -13,8 +13,10 @@ import java.net.HttpURLConnection
 import javax.inject.Inject
 
 class UnsplashImageRepositoryImpl @Inject constructor(
-    private val api: UnsplashApi,  // an instance of UnsplashApi interface for making network requests
-    private val dao: ImageDao  // an instance of ImageDao interface for interacting with the local database
+    // an instance of UnsplashApi interface for making network requests
+    private val api: UnsplashApi,
+    // an instance of ImageDao interface for interacting with the local database
+    private val dao: ImageDao
 ) : UnsplashImageRepository {
 
     /**
@@ -25,10 +27,13 @@ class UnsplashImageRepositoryImpl @Inject constructor(
      */
     override fun getImages(accessKey: String, pageNum: Int): Flow<Resource<List<ImageData>>> = flow {
 
-        emit(Resource.Loading<List<ImageData>>())  // emit a loading state to show the data is being fetched
+        // emit a loading state to show the data is being fetched
+        emit(Resource.Loading<List<ImageData>>())
 
-        val cachedList = dao.fetchImagesForPage(pageNum)  // get cached image data from the local database
-        emit(Resource.Loading(data = cachedList))  // emit a loading state to show the cached data is being displayed
+        // get cached image data from the local database
+        val cachedList = dao.fetchImagesForPage(pageNum)
+        // emit a loading state to show the cached data is being displayed
+        emit(Resource.Loading(data = cachedList))
 
         try {
             // fetch new image data from the Unsplash API
@@ -51,6 +56,7 @@ class UnsplashImageRepositoryImpl @Inject constructor(
         // get updated image data from the local database
         val newImages = dao.fetchImagesForPage(pageNum)
 
-        emit(Resource.Success(data = newImages))  // emit the updated image data as a success state
+        // emit the updated image data as a success state
+        emit(Resource.Success(data = newImages))
     }
 }
