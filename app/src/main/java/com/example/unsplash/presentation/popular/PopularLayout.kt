@@ -20,6 +20,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
@@ -134,7 +135,8 @@ fun ImageItem(imageData: ImageData) {
             .fillMaxSize()
             .padding(horizontal = 8.dp, vertical = 8.dp)
     ) {
-        Box(modifier = Modifier.rotate(rotationAngle)) {
+        Box(modifier = Modifier.fillMaxSize()) {
+            // Show the image in a Box so that it can be rotated independently of the rotation icons
             Image(
                 painter = rememberImagePainter(
                     data = imageData.url,
@@ -156,42 +158,35 @@ fun ImageItem(imageData: ImageData) {
                     .aspectRatio(1f)
                     // Add a gray background behind the image
                     .background(Color.Gray)
-                    // Rotate the image by the current rotation angle
-                    .rotate(rotationAngle)
+                    // Apply rotation transformation to the image only
+                    .graphicsLayer(rotationZ = rotationAngle)
             )
 
-            // Add a rotate left button at the bottom left corner of the image
-            IconButton(
-                onClick = {
-                    // Rotate the image 90 degrees to the left
-                    rotationAngle -= 90f
-                },
+            // Add the rotation icons in a Row at the bottom of the image
+            Row(
+                horizontalArrangement = Arrangement.Center,
                 modifier = Modifier
-                    .align(Alignment.BottomStart)
+                    .align(Alignment.BottomCenter)
                     .padding(16.dp)
+                    .fillMaxWidth()
             ) {
-                Icon(
-                    imageVector = Icons.Filled.KeyboardArrowLeft,
-                    contentDescription = "Rotate Image Left",
-                    tint = Color.White
-                )
-            }
+                // Rotate image to the left when the left arrow is clicked
+                IconButton(onClick = { rotationAngle -= 90 }) {
+                    Icon(
+                        imageVector = Icons.Filled.KeyboardArrowLeft,
+                        contentDescription = "Rotate Left",
+                        tint = Color.White
+                    )
+                }
 
-            // Add a rotate right button at the bottom right corner of the image
-            IconButton(
-                onClick = {
-                    // Rotate the image 90 degrees to the right
-                    rotationAngle += 90f
-                },
-                modifier = Modifier
-                    .align(Alignment.BottomEnd)
-                    .padding(16.dp)
-            ) {
-                Icon(
-                    imageVector = Icons.Filled.KeyboardArrowRight,
-                    contentDescription = "Rotate Image Right",
-                    tint = Color.White
-                )
+                // Rotate image to the right when the right arrow is clicked
+                IconButton(onClick = { rotationAngle += 90 }) {
+                    Icon(
+                        imageVector = Icons.Filled.KeyboardArrowRight,
+                        contentDescription = "Rotate Right",
+                        tint = Color.White
+                    )
+                }
             }
         }
     }
