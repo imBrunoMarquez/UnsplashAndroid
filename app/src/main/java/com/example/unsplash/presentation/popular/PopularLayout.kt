@@ -12,10 +12,13 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.KeyboardArrowLeft
+import androidx.compose.material.icons.filled.KeyboardArrowRight
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -110,12 +113,15 @@ fun PopularRootLayout() {
 }
 
 // Composable function that displays an image and, when clicked, shows a fullscreen version of the image
-@ExperimentalMaterialApi
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun ImageItem(imageData: ImageData) {
     val context = LocalContext.current
     // Remember whether or not to show the fullscreen version of the image
     val showFullScreenImage = remember { mutableStateOf(false) }
+
+    // Remember the current rotation angle of the image
+    var rotationAngle by remember { mutableStateOf(0f) }
 
     // Display the image in a Card
     Card(
@@ -128,28 +134,66 @@ fun ImageItem(imageData: ImageData) {
             .fillMaxSize()
             .padding(horizontal = 8.dp, vertical = 8.dp)
     ) {
-        Image(
-            painter = rememberImagePainter(
-                data = imageData.url,
-                // Use crossfade animation when loading images
-                builder = {
-                    crossfade(true)
-                    // Show a placeholder image while loading
-                    placeholder(R.drawable.ic_loading)
-                    // Show an error image if the image cannot be loaded
-                    error(R.drawable.ic_error)
-                }
-            ),
-            contentDescription = null,
-            contentScale = ContentScale.Crop,
-            modifier = Modifier
-                // Clip the image into a rounded shape
-                .clip(RoundedCornerShape(5.dp))
-                // Make the image aspect ratio 1:1 (square)
-                .aspectRatio(1f)
-                // Add a gray background behind the image
-                .background(Color.Gray)
-        )
+        Box(modifier = Modifier.rotate(rotationAngle)) {
+            Image(
+                painter = rememberImagePainter(
+                    data = imageData.url,
+                    // Use crossfade animation when loading images
+                    builder = {
+                        crossfade(true)
+                        // Show a placeholder image while loading
+                        placeholder(R.drawable.ic_loading)
+                        // Show an error image if the image cannot be loaded
+                        error(R.drawable.ic_error)
+                    }
+                ),
+                contentDescription = null,
+                contentScale = ContentScale.Crop,
+                modifier = Modifier
+                    // Clip the image into a rounded shape
+                    .clip(RoundedCornerShape(5.dp))
+                    // Make the image aspect ratio 1:1 (square)
+                    .aspectRatio(1f)
+                    // Add a gray background behind the image
+                    .background(Color.Gray)
+                    // Rotate the image by the current rotation angle
+                    .rotate(rotationAngle)
+            )
+
+            // Add a rotate left button at the bottom left corner of the image
+            IconButton(
+                onClick = {
+                    // Rotate the image 90 degrees to the left
+                    rotationAngle -= 90f
+                },
+                modifier = Modifier
+                    .align(Alignment.BottomStart)
+                    .padding(16.dp)
+            ) {
+                Icon(
+                    imageVector = Icons.Filled.KeyboardArrowLeft,
+                    contentDescription = "Rotate Image Left",
+                    tint = Color.White
+                )
+            }
+
+            // Add a rotate right button at the bottom right corner of the image
+            IconButton(
+                onClick = {
+                    // Rotate the image 90 degrees to the right
+                    rotationAngle += 90f
+                },
+                modifier = Modifier
+                    .align(Alignment.BottomEnd)
+                    .padding(16.dp)
+            ) {
+                Icon(
+                    imageVector = Icons.Filled.KeyboardArrowRight,
+                    contentDescription = "Rotate Image Right",
+                    tint = Color.White
+                )
+            }
+        }
     }
 
     // If showFullScreenImage is true, display the image in a Dialog
