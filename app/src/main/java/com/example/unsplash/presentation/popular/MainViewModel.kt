@@ -22,6 +22,8 @@ class MainViewModel @Inject constructor(
     private val dispatcherProvider: DispatcherProvider
 ) : ViewModel() {
 
+    //region Variables
+
     // Keep track of the page number for pagination
     private var pageNum = 1
 
@@ -37,6 +39,9 @@ class MainViewModel @Inject constructor(
     private val _eventFlow = MutableSharedFlow<UIEvent>()
     // Expose the UI events as an immutable SharedFlow
     val eventFlow = _eventFlow.asSharedFlow()
+
+
+    //endregion
 
     init {
         // Fetch popular images on initialization

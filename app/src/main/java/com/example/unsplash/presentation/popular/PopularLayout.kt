@@ -40,6 +40,9 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 @ExperimentalFoundationApi
 @Composable
 fun PopularRootLayout() {
+
+    //region Variables
+
     // Obtain MainViewModel using Hilt
     val viewModel: MainViewModel = hiltViewModel()
     // Collect the UI state from the ViewModel using StateFlow
@@ -61,6 +64,8 @@ fun PopularRootLayout() {
             lastVisibleItemIndex > (totalItemsNumber - 2)
         }
     }
+
+    //endregion
 
     // Launch a coroutine that observes the loadMore state and fetches more images if needed
     LaunchedEffect(loadMore) {

@@ -11,7 +11,13 @@ import javax.inject.Inject
  * @param repository An instance of AccessKeyRepository to retrieve the access key from
  */
 class GetKeyUseCase @Inject constructor(
+
+    //region Variables
+
     private val repository: AccessKeyRepository
+
+    //endregion
+
 ) {
 
     /**

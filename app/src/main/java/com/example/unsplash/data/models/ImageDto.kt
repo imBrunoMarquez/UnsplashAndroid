@@ -10,6 +10,9 @@ import kotlinx.parcelize.Parcelize
 // in an Android app using Intents or Bundles.
 @Parcelize
 data class ImageDto(
+
+    //region Variables
+
     // These properties are serialized names from the JSON response
     @SerializedName("alt_description")
     val altDescription: String,
@@ -37,6 +40,9 @@ data class ImageDto(
     val urls: Urls,
     @SerializedName("width")
     val width: Int
+
+    //endregion
+
 ) : Parcelable {
 
     /**

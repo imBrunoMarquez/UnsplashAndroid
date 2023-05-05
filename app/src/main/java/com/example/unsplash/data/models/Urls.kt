@@ -9,6 +9,9 @@ import kotlinx.parcelize.Parcelize
 // in an Android app using Intents or Bundles.
 @Parcelize
 data class Urls(
+
+    //region Variables
+
     // These properties are serialized names from the JSON response
     @SerializedName("full")
     val full: String?,
@@ -20,4 +23,7 @@ data class Urls(
     val small: String?,
     @SerializedName("thumb")
     val thumb: String?
+
+    //endregion
+
 ) : Parcelable
